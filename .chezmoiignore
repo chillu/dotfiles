@@ -1,0 +1,2 @@
+# Don't sync plugin lockfile (causes merge conflicts)
+dot_config/nvim/lazy-lock.json
