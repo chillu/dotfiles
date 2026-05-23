@@ -105,3 +105,7 @@ alias subl="'/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl'"
 alias lzg='lazygit'
 alias lzd='lazydocker'
 alias oc='opencode'
+
+# Local overrides — brew, installers, and manual tweaks go here
+# This file is NOT managed by chezmoi, so it won't be overwritten
+[[ -f ~/.zshrc.local ]] && source ~/.zshrc.local

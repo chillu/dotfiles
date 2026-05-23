@@ -1,2 +1,5 @@
 # Don't sync plugin lockfile (causes merge conflicts)
 dot_config/nvim/lazy-lock.json
+
+# Local shell overrides — never managed by chezmoi
+dot_zshrc.local

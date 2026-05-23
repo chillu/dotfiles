@@ -1,8 +1,7 @@
-tt.*
-.tests
-doc/tags
-debug
-.repro
-foo.*
-*.log
-data
+# LazyVim
+test.sh
+.lua
+debug/
+
+# Chezmoi: Don't track plugin lockfile in source git repo
+lazy-lock.json
