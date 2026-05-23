@@ -22,7 +22,7 @@ Managed with [chezmoi](https://www.chezmoi.io/).
 brew install chezmoi
 
 # Initialize from this repo
-chezmoi init https://github.com/ingoschommer/dotfiles.git
+chezmoi init https://github.com/chillu/dotfiles.git
 
 # Before applying, set your machine-specific data:
 # Edit ~/.config/chezmoi/chezmoi.toml and add:
