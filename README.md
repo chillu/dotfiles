@@ -14,6 +14,7 @@ Homebrew bottles are [cryptographically signed and verified](https://github.com/
 - Editor: Neovim config (`.config/nvim`) — LazyVim-based
 - Terminal multiplexer: cmux config (`.config/cmux`)
 - Git: `.gitconfig` (templated for per-machine email)
+- `Brewfile` — reference list of intentionally installed formulae and casks
 
 ## What's NOT in here
 
@@ -42,7 +43,11 @@ chezmoi diff
 # 5. Apply manually
 chezmoi apply
 
-# 6. Install mackup and restore app configs
+# 6. Install packages from Brewfile
+# Review Brewfile first — legacy/optional packages are commented out
+brew bundle
+
+# 7. Install mackup and restore app configs
 brew install mackup
 mackup restore
 ```
@@ -101,6 +106,24 @@ chezmoi cd && git commit && git push
 mackup --dry-run backup
 mackup backup
 ```
+
+## Managing the Brewfile
+
+`Brewfile` lives in the repo root and documents everything intentionally installed. It is **not** deployed to your home directory by chezmoi — it's a reference and a convenience, not an auto-runner.
+
+```bash
+# Install everything on a new machine (review the file first)
+brew bundle
+
+# Check what's in Brewfile but not installed, or installed but not in Brewfile
+brew bundle check --verbose
+
+# Add a new package and record it
+brew install <package>
+# Then manually add it to Brewfile and commit
+```
+
+Legacy or project-specific packages are commented out in the Brewfile — uncomment them only if a project needs them.
 
 ## Local Overrides
 
