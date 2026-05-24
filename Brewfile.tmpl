@@ -23,15 +23,19 @@ brew "jq"            # JSON processor
 brew "lazygit"
 brew "jesseduffield/lazydocker/lazydocker"
 brew "mackup"        # Mac app config sync (iCloud)
-brew "nvm"           # Node version manager
+brew "node"          # latest Node.js
 brew "sd"            # better sed
 brew "tmux"
 brew "tree"
 brew "uv"            # fast Python package manager
 brew "worktrunk"     # git worktree manager (wt)
+brew "z"             # directory jumper (for oh-my-zsh z plugin)
 
 # ── Editors & code tools ──────────────────────────────────────────────────────
 brew "neovim"
+{{ if eq .machineType "personal" -}}
+brew "xcodegen"      # Xcode project generator
+{{ end }}
 
 # ── Dev utilities ─────────────────────────────────────────────────────────────
 brew "act"           # run GitHub Actions locally
