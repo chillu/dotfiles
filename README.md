@@ -18,7 +18,8 @@ Homebrew bottles are [cryptographically signed and verified](https://github.com/
 
 ## What's NOT in here
 
-- **SSH config** — machine-specific and potentially sensitive
+- **SSH keys** — private keys are machine-specific and never committed
+- **SSH config** — managed by chezmoi, but only contains safe, non-sensitive entries (1Password SSH agent, OrbStack include)
 - **lazy-lock.json** — causes merge conflicts, regenerated on sync
 - **Mac app configs** (lazygit, Ghostty, VS Code, etc.) — these live in `~/Library/Application Support` and are synced separately via [mackup](https://github.com/lra/mackup) to iCloud
 - **Auto-install scripts** — nothing runs automatically on `chezmoi apply`
@@ -109,7 +110,22 @@ op plugin init aws
 heroku login
 ```
 
-### 8. Shell integration
+### 8. Enable 1Password SSH agent
+
+This dotfiles repo includes `~/.ssh/config` pointing the SSH agent to 1Password.
+You just need to enable the agent in the 1Password app:
+
+1. Open **1Password → Settings → Developer**
+2. Turn on **"Use the SSH agent"**
+3. (Optional) Turn on **"Biometric unlock for 1Password CLI"** for `op` shell plugins
+
+Then verify it works:
+
+```bash
+ssh-add -l  # Should list your 1Password-managed SSH keys
+```
+
+### 9. Shell integration
 
 ```bash
 # worktrunk completions
