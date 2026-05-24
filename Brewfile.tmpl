@@ -70,6 +70,7 @@ brew "pgcli"         # Postgres CLI with autocomplete
 brew "pgformatter"
 brew "redis"
 
+{{ if eq .machineType "personal" -}}
 # ── Document & media processing ───────────────────────────────────────────────
 brew "ocrmypdf"
 brew "pandoc"
@@ -77,6 +78,7 @@ brew "poppler"       # PDF utils
 
 # ── Other utilities ───────────────────────────────────────────────────────────
 brew "hugo"          # static site generator
+{{ end -}}
 brew "rsync"
 
 # ── Mac apps (casks) ──────────────────────────────────────────────────────────
