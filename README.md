@@ -81,7 +81,41 @@ These are referenced in aliases or config but not in Brewfile:
 - **Neovim / LazyVim**: First launch bootstraps `lazy.nvim` from GitHub, then downloads all plugins and LSP servers. Takes a few minutes. Just open `nvim` and wait.
 - **cmux**: Config is already deployed. Install the app and it reads `.config/cmux/cmux.json`.
 
-### 6. Restore Mac app configs from iCloud
+### 6. Build opencode-cmux plugin
+
+The [`opencode-cmux`](https://github.com/Attamusc/opencode-cmux) plugin is checked out at `~/lib/opencode-cmux` and built from source. This avoids npm supply-chain risk by pinning to an exact git SHA instead of relying on the npm registry.
+
+```bash
+# Clone and pin to exact SHA
+cd ~/lib
+git clone https://github.com/Attamusc/opencode-cmux.git
+cd opencode-cmux
+git checkout 5d66396703c0dea3ce6b2b55a7d47cecc510a485
+
+# Build with Homebrew bun
+bun install
+bun run build
+```
+
+The opencode config in `~/.config/opencode/opencode.json` already references the built artifact:
+
+```json
+"plugin": [
+  "file:///Users/ingo/lib/opencode-cmux/dist/index.js"
+]
+```
+
+**Updating:** To update to a newer version, check out a new SHA or tag, rebuild, and restart opencode:
+
+```bash
+cd ~/lib/opencode-cmux
+git fetch
+git checkout <new-sha-or-tag>
+bun run build
+# then restart opencode
+```
+
+### 7. Restore Mac app configs from iCloud
 
 ```bash
 brew install mackup
@@ -89,7 +123,7 @@ mackup --dry-run restore
 mackup restore
 ```
 
-### 7. Authenticate CLI tools
+### 8. Authenticate CLI tools
 
 Run these once after install:
 
@@ -110,7 +144,7 @@ op plugin init aws
 heroku login
 ```
 
-### 8. Enable 1Password SSH agent
+### 9. Enable 1Password SSH agent
 
 This dotfiles repo includes `~/.ssh/config` pointing the SSH agent to 1Password.
 
@@ -131,14 +165,14 @@ ssh -T git@github.com  # Should say "Hi <user>! You've successfully authenticate
 
 If `ssh -T` prompts you to authorize via 1Password, approve it. After that, git operations over SSH will work across all your repos.
 
-### 9. Shell integration
+### 10. Shell integration
 
 ```bash
 # worktrunk completions
 wt config shell init zsh
 ```
 
-### 10. Trust local HTTPS certs (if you use mkcert)
+### 11. Trust local HTTPS certs (if you use mkcert)
 
 ```bash
 mkcert -install
