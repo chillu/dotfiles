@@ -113,17 +113,23 @@ heroku login
 ### 8. Enable 1Password SSH agent
 
 This dotfiles repo includes `~/.ssh/config` pointing the SSH agent to 1Password.
-You just need to enable the agent in the 1Password app:
 
 1. Open **1Password → Settings → Developer**
 2. Turn on **"Use the SSH agent"**
 3. (Optional) Turn on **"Biometric unlock for 1Password CLI"** for `op` shell plugins
+4. **Generate or import an SSH key** in 1Password:
+   - 1Password app → your vault → `+` → **SSH Key** → Generate (Ed25519 is fine)
+   - Or import an existing key and delete the local copy from `~/.ssh`
+5. **Add the public key to GitHub**: https://github.com/settings/ssh/new
 
 Then verify it works:
 
 ```bash
 ssh-add -l  # Should list your 1Password-managed SSH keys
+ssh -T git@github.com  # Should say "Hi <user>! You've successfully authenticated..."
 ```
+
+If `ssh -T` prompts you to authorize via 1Password, approve it. After that, git operations over SSH will work across all your repos.
 
 ### 9. Shell integration
 
@@ -132,7 +138,7 @@ ssh-add -l  # Should list your 1Password-managed SSH keys
 wt config shell init zsh
 ```
 
-### 9. Trust local HTTPS certs (if you use mkcert)
+### 10. Trust local HTTPS certs (if you use mkcert)
 
 ```bash
 mkcert -install
