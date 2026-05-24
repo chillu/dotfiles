@@ -14,7 +14,7 @@ Homebrew bottles are [cryptographically signed and verified](https://github.com/
 - Editor: Neovim config (`.config/nvim`) — LazyVim-based
 - Terminal multiplexer: cmux config (`.config/cmux`)
 - Git: `.gitconfig` (templated for per-machine email)
-- `Brewfile` — reference list of intentionally installed formulae and casks
+- `Brewfile` — intentionally installed formulae and casks (templated; work-only packages excluded on personal machines)
 
 ## What's NOT in here
 
@@ -109,7 +109,7 @@ mackup backup
 
 ## Managing the Brewfile
 
-`Brewfile` lives in the repo root and documents everything intentionally installed. It is **not** deployed to your home directory by chezmoi — it's a reference and a convenience, not an auto-runner.
+`Brewfile` is managed by chezmoi and deployed to `~/Brewfile`, so `brew bundle` works from any directory. Work-only packages (heroku, trufflehog) are excluded on personal machines via the `machineType` template variable. Not run automatically — review and run manually.
 
 ```bash
 # Install everything on a new machine (review the file first)
