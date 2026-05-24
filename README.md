@@ -25,31 +25,101 @@ Homebrew bottles are [cryptographically signed and verified](https://github.com/
 
 ## Setup on a new machine
 
-```bash
-# 1. Install chezmoi
-brew install chezmoi
+### 1. Install Oh My Zsh
 
-# 2. Clone dotfiles
+`.zshrc` depends on Oh My Zsh. Install it first:
+
+```bash
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+```
+
+See the [Oh My Zsh Wiki](https://github.com/ohmyzsh/ohmyzsh/wiki) for alternatives (wget, fetch, or the mirrored installer).
+
+### 2. Install chezmoi and apply dotfiles
+
+```bash
+brew install chezmoi
 chezmoi init https://github.com/chillu/dotfiles.git
 
-# 3. Set machine-specific data
-# Edit ~/.config/chezmoi/chezmoi.toml:
-# [data]
-# email = "your-email@company.com"
+# Set machine-specific data
+cat > ~/.config/chezmoi/chezmoi.toml << 'EOF'
+[data]
+email = "your-email@company.com"
+machineType = "personal"  # or "work"
+EOF
 
-# 4. Review what chezmoi will change
 chezmoi diff
-
-# 5. Apply manually
 chezmoi apply
+```
 
-# 6. Install packages from Brewfile
-# Review Brewfile first — legacy/optional packages are commented out
+### 3. Install packages from Brewfile
+
+```bash
+# Review the file first
 brew bundle
+```
 
-# 7. Install mackup and restore app configs
+### 4. Install native apps
+
+These are referenced in aliases or config but not in Brewfile:
+
+- [Tailscale](https://tailscale.com)
+- [Claude Code](https://claude.ai/code)
+- [cmux](https://manaflow.com)
+- [VS Code](https://code.visualstudio.com)
+- [1Password](https://1password.com)
+- [Little Snitch](https://www.obdev.at/products/littlesnitch)
+- [Obsidian](https://obsidian.md)
+- [Raycast](https://www.raycast.com)
+- [Signal](https://signal.org)
+- [WhatsApp](https://www.whatsapp.com)
+- [Voice Type (Careless Whisper)](https://carelesswhisper.app)
+
+### 5. First-run notes
+
+- **Neovim / LazyVim**: First launch bootstraps `lazy.nvim` from GitHub, then downloads all plugins and LSP servers. Takes a few minutes. Just open `nvim` and wait.
+- **cmux**: Config is already deployed. Install the app and it reads `.config/cmux/cmux.json`.
+
+### 6. Restore Mac app configs from iCloud
+
+```bash
 brew install mackup
+mackup --dry-run restore
 mackup restore
+```
+
+### 7. Authenticate CLI tools
+
+Run these once after install:
+
+```bash
+# GitHub CLI
+gh auth login
+
+# AWS (if you use it)
+aws configure
+
+# 1Password CLI
+op account add
+op plugin init gh
+op plugin init aws
+# ... then restart shell so ~/.config/op/plugins.sh is sourced
+
+# Heroku (work machines only)
+heroku login
+```
+
+### 8. Shell integration
+
+```bash
+# worktrunk completions
+wt config shell init zsh
+```
+
+### 9. Trust local HTTPS certs (if you use mkcert)
+
+```bash
+mkcert -install
 ```
 
 ## Manual Workflows
