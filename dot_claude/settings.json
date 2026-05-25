@@ -1,0 +1,128 @@
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(source bin/activate:*)",
+      "Bash(yarn lint:*)",
+      "Bash(yarn tsc:*)",
+      "Bash(./bin/yarn tsc:*)",
+      "Bash(yarn fmt:*)",
+      "Bash(yarn rubocop:ci:*)",
+      "Bash(yarn erb-lint:*)",
+      "Bash(yarn strictNull:check:*)",
+      "Bash(npx biome format *)",
+      "Bash(npx biome check *)",
+      "Bash(yarn workspace @runn/* lint:*)",
+      "Bash(yarn workspace @runn/* test:*)",
+      "Bash(yarn test:*)",
+      "Bash(yarn vitest:*)",
+      "Bash(yarn rspec:*)",
+      "Bash(yarn rake-test:*)",
+      "Bash(bundle exec rspec:*)",
+      "Bash(yarn relay:*)",
+      "Bash(yarn turbo:build:*)",
+      "Bash(yarn bundle-webpack:*)",
+      "Bash(yarn prisma:*)",
+      "Bash(npm show:*)",
+      "Bash(yarn install:*)",
+      "Bash(runn config:*)",
+      "Bash(runn status:*)",
+      "Bash(runn version:*)",
+      "Bash(runn up:*)",
+      "Bash(runn down:*)",
+      "Bash(runn start:*)",
+      "Bash(runn stop:*)",
+      "Bash(runn restart:*)",
+      "Bash(runn logs:*)",
+      "Bash(runn lint:*)",
+      "Bash(runn tsc:*)",
+      "Bash(runn relay:*)",
+      "Bash(runn graphql:*)",
+      "Bash(runn test:*)",
+      "Bash(runn build:*)",
+      "Bash(runn hasura export:*)",
+      "Bash(runn hasura rebuild-allowlist:*)",
+      "Bash(git status:*)",
+      "Bash(git log:*)",
+      "Bash(git diff:*)",
+      "Bash(git branch:*)",
+      "Bash(git show:*)",
+      "Bash(git stash list:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(git merge-base:*)",
+      "Bash(gh auth status:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr checks:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh repo view:*)",
+      "Bash(gh issue view:*)",
+      "Bash(gh issue list:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(wc:*)",
+      "Bash(sort:*)",
+      "Bash(jq:*)",
+      "Bash(./.agents/skills/runn-postgres/scripts/preflight.mjs:*)",
+      "Bash(.agents/skills/runn-postgres/scripts/preflight.mjs:*)",
+      "Bash(./.agents/skills/runn-postgres/scripts/query-readonly.mjs:*)",
+      "Bash(.agents/skills/runn-postgres/scripts/query-readonly.mjs:*)",
+      "Bash(.claude/skills/gh-fix-ci/scripts/inspect_pr_checks.py:*)",
+      "Bash(.agents/skills/gh-fix-ci/scripts/inspect_pr_checks.py:*)",
+      "Bash(.claude/skills/gh-address-comments/scripts/fetch_comments.py:*)",
+      "Bash(.agents/skills/gh-address-comments/scripts/fetch_comments.py:*)",
+      "Bash(npx agent-browser:*)",
+      "Bash(agent-browser:*)",
+      "Bash(./.agents/skills/agent-browser/templates/runn-login.sh:*)",
+      "Bash(.agents/skills/agent-browser/templates/runn-login.sh:*)",
+      "Bash(./.claude/skills/agent-browser/templates/runn-login.sh:*)",
+      "Bash(.claude/skills/agent-browser/templates/runn-login.sh:*)",
+      "WebFetch(domain:api.github.com)"
+    ],
+    "deny": [],
+    "ask": [
+      "Bash(gh pr merge:*)",
+      "Bash(gh pr close:*)",
+      "Bash(gh issue close:*)",
+      "Bash(git push --force:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean:*)",
+      "Bash(rm -rf:*)"
+    ],
+    "defaultMode": "auto"
+  },
+  "enabledPlugins": {
+    "playwright-skill@playwright-skill": false,
+    "figma@claude-plugins-official": true,
+    "worktrunk@worktrunk": true
+  },
+  "extraKnownMarketplaces": {
+    "worktrunk": {
+      "source": {
+        "source": "github",
+        "repo": "max-sixty/worktrunk"
+      }
+    }
+  },
+  "sandbox": {
+    "enabled": true,
+    "enableWeakerNetworkIsolation": true,
+    "allowUnixSockets": [
+      "~/Library/Application Support/cmux/cmux.sock"
+    ]
+  },
+  "remoteControlAtStartup": true,
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true,
+  "skipDangerousModePermissionPrompt": true,
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  }
+}
