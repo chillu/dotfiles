@@ -3,16 +3,6 @@ export default {
     name: "Google Chrome",
     profile: "Work"
   },
-  rewrite: [
-    {
-      // Redirect all x.com urls to use xcancel.com
-      match: "x.com/*",
-      url: (url) => {
-        url.host = "xcancel.com";
-        return url;
-      },
-    },
-  ],
   handlers: [
     {
       // Any depth under `.localhost`: catches both legacy `<project>.localhost`
