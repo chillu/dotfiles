@@ -52,3 +52,24 @@ fi
 # Local overrides — brew, installers, and manual tweaks go here
 # This file is NOT managed by chezmoi, so it won't be overwritten
 [[ -f ~/.zshrc.local ]] && source ~/.zshrc.local
+
+{{ if eq .machineType "work" -}}
+# Coralogix cx CLI — resolve API key + region from 1Password (Employee vault)
+cx() { op run --env-file="$HOME/.config/cx/op.env" -- command cx "$@"; }
+
+# Coralogix cx-range: chunk a DataPrime query into 8-day windows (frequent-tier limit) and merge.
+# Usage: cx-range <days> '<dataprime query>'
+cx-range() {
+  local days="$1"; shift
+  local query="$1"; shift
+  local window=8
+  local chunks=$(( (days + window - 1) / window ))
+  local i start end
+  for (( i = 0; i < chunks; i++ )); do
+    start="now-$(( (i + 1) * window ))d"
+    end="now-$(( i * window ))d"
+    >&2 echo "=== $start → $end ==="
+    cx logs "$query" --start "$start" --end "$end" --tier frequent --limit 1000 -o json "$@"
+  done | jq -s 'add'
+}
+{{ end -}}

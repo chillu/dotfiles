@@ -1,5 +1,4 @@
 {
-  "model": "claude-opus-4-7",
   "env": {
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
@@ -98,6 +97,11 @@
     ],
     "defaultMode": "auto"
   },
+  "model": "opus[1m]",
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/statusline-command.sh"
+  },
   "enabledPlugins": {
     "playwright-skill@playwright-skill": false,
     "figma@claude-plugins-official": true,
@@ -118,12 +122,9 @@
       "~/Library/Application Support/cmux/cmux.sock"
     ]
   },
+  "effortLevel": "high",
+  "skipDangerousModePermissionPrompt": true,
   "remoteControlAtStartup": true,
   "agentPushNotifEnabled": true,
-  "skipAutoPermissionPrompt": true,
-  "skipDangerousModePermissionPrompt": true,
-  "statusLine": {
-    "type": "command",
-    "command": "bash ~/.claude/statusline-command.sh"
-  }
+  "skipAutoPermissionPrompt": true
 }
