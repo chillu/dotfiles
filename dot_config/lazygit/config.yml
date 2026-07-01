@@ -7,9 +7,10 @@ gui:
   scrollHeight: 10
 customCommands:
   # GitHub-PR-style diff: what the current branch introduces relative to the
-  # selected base branch, using a 3-dot (merge-base) diff. Select the base
-  # branch (e.g. main) in the Local Branches panel, then press ctrl+p.
-  - key: "<c-p>"
+  # selected base branch, using a 3-dot (merge-base) diff. Focus the Local
+  # Branches panel (press 3), select the base branch (e.g. main), then press D.
+  # NB: ctrl+p is a reserved global binding (View custom patch options).
+  - key: "D"
     context: "localBranches"
     description: "PR diff (base...HEAD)"
     command: "git diff {{.SelectedLocalBranch.Name}}...HEAD"
