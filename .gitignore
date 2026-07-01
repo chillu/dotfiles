@@ -3,9 +3,7 @@
 # it does NOT encrypt content in git. Anything committed here is public.
 # Keep secret-bearing dotfiles OUT of the repo entirely.
 
-# SSH — never publish
-private_dot_ssh/
-dot_ssh/
+# SSH — the config is safe to track; private KEY material never is.
 *id_rsa*
 *id_ed25519*
 *id_ecdsa*

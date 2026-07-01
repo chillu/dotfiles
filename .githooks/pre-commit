@@ -24,8 +24,6 @@ while IFS= read -r f; do
       note "sensitive file staged: $f" ;;
     */hosts.yml|*/private_hosts.yml|*/.netrc|*/credentials)
       note "credential file staged: $f" ;;
-    private_dot_ssh/*|dot_ssh/*)
-      note "ssh dotfile staged: $f (SSH config should stay out of a public repo)" ;;
   esac
 done <<EOF
 $staged
