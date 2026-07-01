@@ -41,6 +41,30 @@ fi
 # wt (worktrunk) shell integration
 if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
 
+# cmux workspace helpers
+# n <branch> [name] — new worktree + workspace running Claude
+n() {
+    cmux workspace create --focus=true --name="${2:-$1}" --cwd ~/Projects/runn --command="wt switch --create $1 && ./scripts/setup-worktree.sh && pnpm i && claude --remote-control=\"${2:-$1}\""
+}
+
+# np <github-pr-url> — new workspace checked out to a PR, running Claude
+np() {
+    local url="$1"
+    if [[ ! "$url" =~ ^https://github\.com/([^/]+/[^/]+)/pull/([0-9]+) ]]; then
+      echo "usage: np <github-pr-url>" >&2; return 1
+    fi
+    local repo="${match[1]}" pr="${match[2]}"
+    local cwd="$HOME/Projects/${repo##*/}"
+    [[ -d "$cwd" ]] || { echo "np: repo dir not found: $cwd" >&2; return 1; }
+    local title
+    title=$(gh pr view "$pr" --repo "$repo" --json title -q .title) || return 1
+    cmux workspace create --focus=true \
+      --name="$title" \
+      --description="$url" \
+      --cwd "$cwd" \
+      --command="wt switch pr:$pr && ./scripts/setup-worktree.sh && pnpm i && claude --remote-control=\"$title\""
+}
+
 {{ if eq .machineType "work" -}}
 # Heroku autocomplete
 HEROKU_AC_ZSH_SETUP_PATH=~/Library/Caches/heroku/autocomplete/zsh_setup
