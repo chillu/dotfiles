@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# pre-commit — block secrets from landing in this PUBLIC dotfiles repo.
+#
+# chezmoi's `private_` prefix is NOT encryption; this repo is public. This hook
+# is the backstop behind .gitignore: it inspects staged filenames AND staged
+# content, and aborts the commit if anything looks secret-bearing.
+#
+# Written for bash 3.2 (macOS system bash) — no associative arrays.
+# Bypass (only if you are certain): git commit --no-verify
+
+set -uo pipefail
+
+fail=0
+note() { printf '  \033[31m✗\033[0m %s\n' "$1" >&2; fail=1; }
+
+staged=$(git diff --cached --name-only --diff-filter=ACM)
+[ -z "$staged" ] && exit 0
+
+# 1) Sensitive filenames that must never be committed.
+while IFS= read -r f; do
+  [ -z "$f" ] && continue
+  case "$f" in
+    *id_rsa|*id_ed25519|*id_ecdsa|*id_dsa|*.pem|*.key|*.p12|*.pfx)
+      note "sensitive file staged: $f" ;;
+    */hosts.yml|*/private_hosts.yml|*/.netrc|*/credentials)
+      note "credential file staged: $f" ;;
+    private_dot_ssh/*|dot_ssh/*)
+      note "ssh dotfile staged: $f (SSH config should stay out of a public repo)" ;;
+  esac
+done <<EOF
+$staged
+EOF
+
+# 2) Secret-looking content in the staged diff (added lines only).
+#    Each entry is "label|regex" (regex is extended, case-insensitive).
+added=$(git diff --cached --diff-filter=ACM -U0 | grep '^+' | grep -v '^+++' || true)
+checks='private key block|-----BEGIN [A-Z ]*PRIVATE KEY-----
+GitHub token|gh[pousr]_[A-Za-z0-9]{20,}
+Slack token|xox[baprs]-[A-Za-z0-9-]{10,}
+AWS access key|AKIA[0-9A-Z]{16}
+OAuth/api token assignment|(oauth_token|api[_-]?key|secret)[[:space:]"'\'':=]+[A-Za-z0-9/_+=-]{16,}'
+
+while IFS='|' read -r label regex; do
+  [ -z "$label" ] && continue
+  if printf '%s\n' "$added" | grep -Eiq -e "$regex"; then
+    note "possible $label in staged changes"
+  fi
+done <<EOF
+$checks
+EOF
+
+if [ "$fail" -ne 0 ]; then
+  printf '\n\033[31mCommit blocked\033[0m — this repo is PUBLIC and has no encryption.\n' >&2
+  printf 'Remove the above from staging, or add it to .gitignore.\n' >&2
+  printf 'If this is a false positive: git commit --no-verify\n' >&2
+  exit 1
+fi
+exit 0

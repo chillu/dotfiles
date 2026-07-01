@@ -1,0 +1,34 @@
+# ⚠️ This is a PUBLIC repo and chezmoi has NO encryption configured.
+# chezmoi's `private_` prefix only sets file permissions (chmod 600) on apply —
+# it does NOT encrypt content in git. Anything committed here is public.
+# Keep secret-bearing dotfiles OUT of the repo entirely.
+
+# SSH — never publish
+private_dot_ssh/
+dot_ssh/
+*id_rsa*
+*id_ed25519*
+*id_ecdsa*
+*id_dsa*
+
+# GitHub CLI hosts file contains an OAuth token
+dot_config/gh/private_hosts.yml
+dot_config/gh/hosts.yml
+**/hosts.yml
+
+# Credentials / key material
+*.pem
+*.key
+*.p12
+*.pfx
+**/.netrc
+**/.env
+**/.env.*
+!**/.env.example
+**/credentials
+**/*secret*
+**/*token*
+
+# chezmoi local state / config that may hold secrets
+.chezmoi.toml.local
+key.txt
