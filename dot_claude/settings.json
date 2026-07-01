@@ -119,7 +119,8 @@
     "enabled": true,
     "enableWeakerNetworkIsolation": true,
     "allowUnixSockets": [
-      "~/Library/Application Support/cmux/cmux.sock"
+      "~/Library/Application Support/cmux/cmux.sock",
+      "~/.local/state/cmux/cmux.sock"
     ]
   },
   "effortLevel": "high",
