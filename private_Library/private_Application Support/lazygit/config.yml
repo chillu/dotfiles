@@ -5,3 +5,12 @@ git:
       pager: delta --dark --paging=never
 gui:
   scrollHeight: 10
+customCommands:
+  # GitHub-PR-style diff: what the current branch introduces relative to the
+  # selected base branch, using a 3-dot (merge-base) diff. Select the base
+  # branch (e.g. main) in the Local Branches panel, then press ctrl+p.
+  - key: "<c-p>"
+    context: "localBranches"
+    description: "PR diff (base...HEAD)"
+    command: "git diff {{.SelectedLocalBranch.Name}}...HEAD"
+    subprocess: true
