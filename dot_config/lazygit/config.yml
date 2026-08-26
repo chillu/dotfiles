@@ -1,8 +1,8 @@
 git:
   autoFetch: false
-  pagers:
+  diffRenderers:
     - colorArg: always
-      pager: delta --dark --paging=never
+      command: delta --dark --paging=never
 gui:
   scrollHeight: 10
 customCommands:
@@ -14,4 +14,4 @@ customCommands:
     context: "localBranches"
     description: "PR diff (base...HEAD)"
     command: "git diff {{.SelectedLocalBranch.Name}}...HEAD"
-    subprocess: true
+    output: terminal
