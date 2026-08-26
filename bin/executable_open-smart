@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+# open-smart — route a path or URL to Neovim or to the macOS default handler.
+#
+# Editable text opens in Neovim; images, media, documents, archives and URLs
+# fall through to `open`, i.e. whatever macOS has registered for them.
+#
+# Neovim is launched in a fresh cmux terminal surface rather than in place,
+# because callers like lazygit's `o` key run this as a background command and
+# can't hand over their terminal to a TUI.
+#
+# Wired into lazygit via os.open in ~/.config/lazygit/config.yml.
+#   OPEN_SMART_EDITOR   override the editor (default: nvim)
+#   OPEN_SMART_GUI_EXTS extensions that always go to the GUI app
+#   OPEN_SMART_TXT_EXTS extensions that always go to the editor
+
+set -euo pipefail
+
+editor="${OPEN_SMART_EDITOR:-nvim}"
+
+# Extensions for the GUI app, even when the bytes are technically text (.svg).
+gui_exts="${OPEN_SMART_GUI_EXTS:-svg|pdf|png|jpg|jpeg|gif|webp|avif|heic|ico|icns|bmp|tiff|psd|ai|sketch|fig|mp3|m4a|wav|flac|aac|ogg|mp4|mov|avi|mkv|webm|zip|tar|gz|tgz|bz2|xz|zst|7z|rar|dmg|pkg|app|iso|doc|docx|xls|xlsx|ppt|pptx|key|numbers|pages|odt|ods|sqlite|sqlite3|db|wasm|so|dylib|dll|class|jar|exe|bin}"
+
+# Extensions for the editor, no questions asked. macOS `file` misreports short
+# files as application/octet-stream, so an explicit list beats sniffing here.
+txt_exts="${OPEN_SMART_TXT_EXTS:-txt|md|mdx|markdown|rst|adoc|org|log|csv|tsv|json|jsonc|json5|yaml|yml|toml|ini|cfg|conf|env|properties|xml|plist|html|htm|css|scss|sass|less|js|jsx|mjs|cjs|ts|tsx|mts|cts|vue|svelte|astro|go|rs|py|pyi|rb|rake|php|java|kt|kts|scala|swift|m|mm|c|h|cc|cpp|cxx|hpp|hh|cs|zig|nim|lua|vim|el|clj|cljs|edn|ex|exs|erl|hrl|hs|ml|mli|fs|fsx|dart|pl|pm|r|jl|sql|graphql|gql|proto|thrift|sh|bash|zsh|fish|ps1|bat|cmd|nix|tf|tfvars|hcl|dockerfile|containerfile|make|mk|cmake|gradle|sbt|bzl|bazel|patch|diff|lock|gitignore|gitattributes|gitmodules|editorconfig|npmrc|nvmrc|prettierrc|eslintrc|babelrc|snap|tmpl|tpl|gotmpl|j2|hbs|ejs|erb|haml|slim|pug|twig|liquid|srt|vtt|ics|http|rest|cue|dhall|jsonl|ndjson|ipynb}"
+
+target="${1:-}"
+[ -n "$target" ] || { echo "usage: open-smart <path|url>" >&2; exit 64; }
+
+os_open() { exec open "$@"; }
+edit() {
+  local abs
+  # Absolute, because the new surface's shell may start in a different cwd.
+  case "$1" in
+    /*) abs="$1" ;;
+    *)  abs="$PWD/$1" ;;
+  esac
+  if command -v cmux >/dev/null 2>&1; then
+    local created surface
+    created=$(cmux new-surface --type terminal --focus true 2>/dev/null || true)
+    surface=$(printf '%s' "$created" | grep -oE 'surface:[0-9]+' | head -1)
+    if [ -n "$surface" ]; then
+      # Wait for the new shell to paint a prompt. Sending before it is listening
+      # loses the keystrokes (and the trailing newline, so nothing runs).
+      local i=0
+      while [ "$i" -lt 60 ]; do
+        [ -n "$(cmux read-screen --surface "$surface" --lines 2 2>/dev/null | tr -d '[:space:]')" ] && break
+        sleep 0.1
+        i=$((i + 1))
+      done
+      sleep 0.2
+      # The trailing newline must be literal: command substitution strips it,
+      # which leaves the command typed at the prompt but never submitted.
+      local cmd
+      cmd=$(printf '%s -- %q' "$editor" "$abs")
+      cmux send --surface "$surface" "$cmd
+" >/dev/null 2>&1 && exit 0
+    fi
+  fi
+  # Not under cmux, or cmux control failed: let the OS decide rather than
+  # silently doing nothing.
+  os_open "$1"
+}
+
+# Anything with a URL scheme, and directories, belong to the OS handler.
+case "$target" in
+  *://*|mailto:*|tel:*) os_open "$target" ;;
+esac
+[ -d "$target" ] && os_open "$target"
+
+base=$(basename -- "$target")
+ext=""
+case "$base" in
+  ?*.*) ext=$(printf '%s' "${base##*.}" | tr '[:upper:]' '[:lower:]') ;;
+esac
+
+if [ -n "$ext" ]; then
+  printf '%s' "$ext" | grep -qxE "$gui_exts" && os_open "$target"
+  printf '%s' "$ext" | grep -qxE "$txt_exts" && edit "$target"
+fi
+
+# Extensionless (Makefile, Dockerfile, LICENSE, hooks) or an unknown extension:
+# ask `file`, and default to the editor when it has no opinion.
+if [ -e "$target" ]; then
+  case "$(file --brief --mime-type -- "$target" 2>/dev/null || true)" in
+    text/*|inode/x-empty|application/x-empty|"") edit "$target" ;;
+    application/json|application/xml|application/javascript) edit "$target" ;;
+    application/x-shellscript|application/toml|application/x-yaml) edit "$target" ;;
+    *) os_open "$target" ;;
+  esac
+fi
+
+# Path doesn't exist yet — treat it as a file to create.
+edit "$target"

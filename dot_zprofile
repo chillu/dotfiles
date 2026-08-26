@@ -9,3 +9,7 @@ export XDG_CONFIG_HOME="$HOME/.config"
 source ~/.orbstack/shell/init.zsh 2>/dev/null || :
 
 eval "$(/opt/homebrew/bin/brew shellenv zsh)"
+
+# Neovim is the editor for everything that asks: git, lazygit, gh, kubectl, ...
+export EDITOR="nvim"
+export VISUAL="nvim"

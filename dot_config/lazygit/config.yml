@@ -3,6 +3,13 @@ git:
   diffRenderers:
     - colorArg: always
       command: delta --dark --paging=never
+os:
+  # `e` / `E` — edit in Neovim, in place, taking over the lazygit terminal.
+  editPreset: 'nvim'
+  # `o` — "open". Routes text to Neovim in a new cmux surface and leaves images,
+  # PDFs, media and archives to the macOS default app. See ~/bin/open-smart.
+  open: '$HOME/bin/open-smart {{filename}}'
+  openLink: 'open {{link}}'
 gui:
   scrollHeight: 10
 customCommands:
