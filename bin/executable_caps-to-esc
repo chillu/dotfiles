@@ -1,0 +1,23 @@
+#!/bin/sh
+# caps-to-esc — remap Caps Lock to Escape on every attached keyboard.
+#
+# System Settings > Keyboard > Modifier Keys stores this per USB product ID, so
+# the same keyboard loses the mapping when it changes connection mode (the
+# Keychron K3 Max is 0xD030 wired and 0x0A30 over Bluetooth). `hidutil` with no
+# --matching applies to all devices, which sidesteps that entirely.
+#
+# The mapping lives only until reboot, so local.caps-to-esc.plist reapplies it
+# at login. Run with `--clear` to undo it for the current session.
+#
+#   0x700000039  Caps Lock      0x700000029  Escape
+
+set -eu
+
+if [ "${1:-}" = "--clear" ]; then
+  exec hidutil property --set '{"UserKeyMapping":[]}'
+fi
+
+exec hidutil property --set '{"UserKeyMapping":[
+  {"HIDKeyboardModifierMappingSrc":0x700000039,
+   "HIDKeyboardModifierMappingDst":0x700000029}
+]}'
