@@ -105,13 +105,22 @@
   "enabledPlugins": {
     "playwright-skill@playwright-skill": false,
     "figma@claude-plugins-official": true,
-    "worktrunk@worktrunk": true
+    "worktrunk@worktrunk": true,
+    "notion@claude-plugins-official": true,
+    "mattpocock-skills@claude-plugins-official": true,
+    "mixpanel@mixpanel": true
   },
   "extraKnownMarketplaces": {
     "worktrunk": {
       "source": {
         "source": "github",
         "repo": "max-sixty/worktrunk"
+      }
+    },
+    "mixpanel": {
+      "source": {
+        "source": "github",
+        "repo": "mixpanel/ai-plugins"
       }
     }
   },
@@ -123,7 +132,12 @@
       "~/.local/state/cmux/cmux.sock"
     ]
   },
-  "effortLevel": "high",
+  "effortLevel": "medium",
+  "modelSettings": {
+    "claude-opus-5": {
+      "effortLevel": "medium"
+    }
+  },
   "skipDangerousModePermissionPrompt": true,
   "remoteControlAtStartup": true,
   "agentPushNotifEnabled": true,

@@ -22,6 +22,9 @@ model=$(echo "$input" | jq -r '.model.display_name // empty')
 # Reasoning effort
 effort=$(echo "$input" | jq -r '.effort.level // empty')
 
+# Session cost (client-side estimate at API list price)
+cost=$(echo "$input" | jq -r '.cost.total_cost_usd // empty')
+
 # Rate limits
 five_hour=$(echo "$input" | jq -r '.rate_limits.five_hour.used_percentage // empty')
 seven_day=$(echo "$input" | jq -r '.rate_limits.seven_day.used_percentage // empty')
@@ -74,6 +77,10 @@ fi
 
 if [ -n "$used" ]; then
   parts="$parts $(printf '\033[2mctx:%.0f%%\033[0m' "$used")"
+fi
+
+if [ -n "$cost" ]; then
+  parts="$parts $(printf '\033[2m$%.2f\033[0m' "$cost")"
 fi
 
 if [ -n "$five_hour" ] || [ -n "$seven_day" ]; then
