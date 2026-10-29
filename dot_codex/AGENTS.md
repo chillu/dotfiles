@@ -10,6 +10,7 @@ Shared by Claude Code (imported from `~/.claude/CLAUDE.md`), Codex and Gemini CL
 
 - Link every pull request and Linear issue you mention to the user, e.g. `[SEC-716](https://linear.app/runn/issue/SEC-716)`.
 - In those chat links, point PRs at Linear's review page by swapping `github.com` for `linear.review`: `https://linear.review/owner/repo/pull/123`. Everything written for others (commands, commits, PR descriptions) keeps `github.com`.
+- Name every file by its repo-relative path, e.g. `app/javascript/src/common/Button.tsx` rather than `Button.tsx`, in reviews, summaries and plans alike. The full path makes the name a clickable link in the terminal and pins down which file you mean.
 
 <!-- >>> heroku-guard >>> -->
 <!-- Managed by heroku-guard's install.sh, which rewrites this block. Remove it with ./install.sh --uninstall. -->
